@@ -15,12 +15,12 @@
           {% csrf_token %}
           <div class="form__group form__group">
             <label for="room_name">Username</label>
-            <input id="username" name="username" type="text" placeholder="e.g. orange" />
+            <input id="username" name="username" type="text" placeholder="e.g. orange" required />
           </div>
           <div class="form__group">
             <label for="password">Password</label>
             <input id="password" name="password" type="password"
-              placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" />
+              placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" required />
           </div>
 
           <button class="btn btn--main" type="submit">
