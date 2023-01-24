@@ -1,0 +1,4 @@
+<option value="" disabled>---------</option>
+{% for block in blocks|dictsort:"id" %} 
+<option value="{{ block.pk }}">{{ block.block_name }}</option>
+{% endfor %}

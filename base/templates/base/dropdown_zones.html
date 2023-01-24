@@ -1,0 +1,4 @@
+<option value="" disabled>---------</option>
+{% for zone in zones|dictsort:"id" %}
+<option value="{{ zone.pk }}">{{ zone.zone_name }}</option>
+{% endfor %}

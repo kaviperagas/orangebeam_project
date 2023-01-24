@@ -1,0 +1,105 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+{% load custom_tags %}
+
+<h1 style="font-size:30px">{{project_list.project_name}}</h1>
+<br>
+
+{% for block in blocks.all %}
+<h1 style="font-size:20px">{{block.block_name}}</h1>
+<br>
+<table border="2" style="background-color:lightsteelblue; color: black; border-color: black;">
+    <tr>
+        <th rowspan="3" width="100px">Level</th>
+        {% for zone in zones.all %}
+        <th colspan="9" scope="colgroup">{{zone.zone_name}}</th>
+        {% endfor %}
+    </tr>
+    <tr>
+        {% for zone in zones.all %}
+        <th colspan="3" scope="col">Target</th>
+        <th colspan="3" scope="col">Actual</th>
+        <th colspan="3" scope="col">Variance</th>
+        {% endfor %}
+    </tr>
+    <tr>
+        {% for zone in zones.all %}
+        <th scope="col" width="100px">Date</th>
+        <th scope="col" width="100px">W/D</th>
+        <th scope="col" width="100px">FLR.CYL</th>
+        <th scope="col" width="100px">Date</th>
+        <th scope="col" width="100px">W/D</th>
+        <th scope="col" width="100px">FLR.CYL</th>
+        <th scope="col" width="100px">Date</th>
+        <th scope="col" width="100px">W/D</th>
+        <th scope="col" width="100px">FLR.CYL</th>
+        {% endfor %}
+    </tr>
+
+    {% for floor in floors.all reversed %}
+    <tr>
+        <th scope="row">{{floor.floor_name}}</th>
+        {% for zone in zones.all %}
+
+        <th align="center">
+            {% with newdate=project_list.start_date %}
+            {% for target in targetfloors.all%}
+            {% if target.block.pk == block.pk %}
+            {% if target.zone.pk == zone.pk %}
+            {% if target.floor.pk == floor.pk %}
+            {% if not target.floor.pk == firstfloors.pk %}
+            {% plus_days newdate target.target_floor_cycle as newdate %}
+            {% else %}
+            {% plus_days project_list.start_date target.target_floor_cycle as newdate %}
+            {% endif %}
+            {{newdate|date:"d/m/Y"}}
+            {% endif %}
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+            {% endwith %}
+        </th>
+        <th align="center">2</th>
+        <th align="center" style="height: 30px; width: 150px;">
+            {% for target in targetfloors.all %}
+            {% if target.block.pk == block.pk %}
+            {% if target.zone.pk == zone.pk %}
+            {% if target.floor.pk == floor.pk %}
+            <a href="{% url 'update-targetfloor' target.id %}" style="color: black;"><u>{{target.target_floor_cycle}}
+                    Days<span class="material-symbols-outlined" style="height: 2px; width: 2px;">
+                        edit
+                    </span></u></a>
+            {% endif %}
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+        </th>
+        <th align="center" style="background-color: orange; color: black;">1</th>
+        <th align="center" style="background-color: red; color: black;">2</th>
+        <th align="center" style="height: 0px; width: 150px;">
+            {% for actual in actualfloors.all %}
+            {% if actual.block.pk == block.pk %}
+            {% if actual.zone.pk == zone.pk %}
+            {% if actual.floor.pk == floor.pk %}
+            <a href="{% url 'update-actualfloor' actual.id %}" style="color: black;"><u>{{actual.actual_floor_cycle}}
+                    Days<span class="material-symbols-outlined" style="height: 2px; width: 2px;">
+                        edit
+                    </span></u></a>
+            {% endif %}
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+        </th>
+        <th align="center" style="color: red;">1</th>
+        <th align="center" style="color: green;">2</th>
+        <th align="center" style="color: darkorange;">3</th>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+<br>
+{% endfor %}
+
+{% endblock content %}

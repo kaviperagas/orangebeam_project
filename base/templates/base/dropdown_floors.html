@@ -1,0 +1,4 @@
+<option value="" disabled>---------</option>
+{% for floor in floors|dictsort:"id" %}
+<option value="{{ floor.pk }}">{{ floor.floor_name }}</option>
+{% endfor %}

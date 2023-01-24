@@ -1,0 +1,97 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<main class="update-account layout">
+    <div class="container">
+        <div class="layout__box">
+            <div class="layout__boxHeader">
+                <div class="layout__boxTitle">
+                    <a href="{{request.META.HTTP_REFERER}}">
+                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                            viewBox="0 0 32 32">
+                            <title>arrow-left</title>
+                            <path
+                                d="M13.723 2.286l-13.723 13.714 13.719 13.714 1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z">
+                            </path>
+                        </svg>
+                    </a>
+                    <h3>Update Target Floor Cycle Days</h3>
+                </div>
+            </div>
+            <div class="layout__body">
+                {% if page == 'update_targetfloor' %}
+                <form method="POST" id="targetFloorForm" action="" blocks-url="{% url 'load-blocks' %}"
+                    zones-url="{% url 'load-zones' %}" floors-url="{% url 'load-floors' %}">
+                    {% csrf_token %}
+                    <div class="form__group">
+                        <label for="room_name">Project</label>
+                        {{form.project}}
+                    </div>
+                    <div class="form__group">
+                        <label for="room_name">Block</label>
+                        {{form.block}}
+                    </div>
+                    <div class="form__group">
+                        <label for="room_name">Zone</label>
+                        {{form.zone}}
+                    </div>
+                    <div class="form__group">
+                        <label for="room_name">Floor</label>
+                        {{form.floor}}
+                    </div>
+                    <div class="form__group">
+                        <label for="room_name">Target Floor Cycle</label>
+                        {{form.target_floor_cycle}}
+                    </div>
+                    <a class="btn btn--dark" href="{{request.META.HTTP_REFERER}}">Cancel</a>
+                    <button class="btn btn--main" type="submit">Submit</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+    $("#id_project").change(function () {
+        var url1 = $("#targetFloorForm").attr("blocks-url");
+        var url2 = $("#targetFloorForm").attr("zones-url");
+        var url3 = $("#targetFloorForm").attr("floors-url");
+        var projectId = $(this).val();
+
+        $.ajax({
+            url: url1,
+            data: {
+                'project': projectId
+            },
+            success: function (data) {
+                $("#id_block").html(data);
+            }
+        });
+
+        $.ajax({
+            url: url2,
+            data: {
+                'project': projectId
+            },
+            success: function (data) {
+                $("#id_zone").html(data);
+            }
+        });
+
+        $.ajax({
+            url: url3,
+            data: {
+                'project': projectId
+            },
+            success: function (data) {
+                $("#id_floor").html(data);
+            }
+        });
+
+    });
+</script>
+
+{% endblock %}

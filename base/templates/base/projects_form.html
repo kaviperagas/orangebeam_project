@@ -1,0 +1,232 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<main class="create-project layout">
+  <div class="container">
+    <div class="layout__box">
+      <div class="layout__boxHeader">
+        <div class="layout__boxTitle">
+          <a href="{% url 'home' %}">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+              <title>arrow-left</title>
+              <path
+                d="M13.723 2.286l-13.723 13.714 13.719 13.714 1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z">
+              </path>
+            </svg>
+          </a>
+          <h3>Create/Update Project</h3>
+        </div>
+      </div>
+      <div class="layout__body">
+        {% if page == 'create_project' %}
+        <form class="form" method="POST" action="">
+          {% csrf_token %}
+          <div class="form__group">
+            <label for="room_name">Project Name</label>
+            <input type="text" name="project_name" id="project_name" required>
+          </div>
+
+          <div class="form__group">
+            <label for="room_name">Manager Name</label>
+            <input type="text" name="manager_name" id="manager_name" required>
+          </div>
+
+          <div class="form__group">
+            <label for="room_name">Start Date</label>
+            <input type="date" name="start_date" id="start_date" required>
+          </div>
+
+          <div class="form__group">
+            <label for="room_name">Due Date</label>
+            <input type="date" name="due_date" id="due_date" required>
+          </div>
+
+          <div class="form__group" id="blockInfo">
+            <label for="room_name">Block Name</label>
+            <input type="text" name="block_name" id="block_name" required>
+          </div>
+
+          <input class="btn btn--main" type="button" id="addBlock" value="Add Block">
+          <input class="btn btn--main" type="button" id="deleteBlock" value="Delete Block">
+          <br><br>
+
+          <div class="form__group" id="zoneInfo">
+            <label for="room_name">Zone Name</label>
+            <input type="text" name="zone_name" id="zone_name" required>
+          </div>
+
+          <input class="btn btn--main" type="button" id="addZone" value="Add Zone">
+          <input class="btn btn--main" type="button" id="deleteZone" value="Delete Zone">
+          <br><br>
+
+          <div class="form__group" id="floorInfo">
+            <label for="room_name">Floor Name (Start with typical floor number)</label>
+            <input type="text" name="floor_name" id="floor_name" required>
+          </div>
+
+          <input class="btn btn--main" type="button" id="addFloor" value="Add Floor">
+          <input class="btn btn--main" type="button" id="deleteFloor" value="Delete Floor">
+          <br><br>
+
+
+          <div class="form__action">
+            <a class="btn btn--dark" href="{% url 'home' %}">Cancel</a>
+            <button class="btn btn--main" type="submit">Submit</button>
+          </div>
+          <!-- <div class="form__group">
+            <label for="room_name">Project Name</label>
+            <input type="text" name="project_name" id="project_name">
+          </div>
+
+          <div class="form__group">
+            <label for="room_name">Manager Name</label>
+            <input type="text" name="manager_name" id="manager_name">
+          </div>
+
+          <div class="form__group">
+            <label for="room_name">Due Date</label>
+            <input type="date" name="due_date" id="due_date">
+          </div>
+
+          <div class="form__action">
+            <a class="btn btn--dark" href="{% url 'home' %}">Cancel</a>
+            <button class="btn btn--main" type="submit">Submit</button>
+          </div> -->
+        </form>
+        {% endif %}
+
+        {% if page == 'update_project' %}
+        <form class="form" method="POST" action="">
+          {% csrf_token %}
+          <div class="form__group">
+            <label for="room_name">Project Name</label>
+            {{form.project_name}}
+          </div>
+
+          <div class="form__group">
+            <label for="room_name">Manager Name</label>
+            {{form.manager_name}}
+          </div>
+
+          <div class="form__group">
+            <label for="room_name">Start Date</label>
+            {{form.start_date}}
+          </div>
+
+          <div class="form__group">
+            <label for="room_name">Due Date</label>
+            {{form.due_date}}
+          </div>
+
+          <div class="form__group" id="blockInfo">
+            <label for="room_name">Block Name</label>
+            {% for block in blocks.all %}
+            <input type="text" name="block_name" id="block_name" value="{{block.block_name}}" required>
+            {% endfor %}
+          </div>
+
+          <input class="btn btn--main" type="button" id="addBlock" value="Add Block">
+          <input class="btn btn--main" type="button" id="deleteBlock" value="Delete Block">
+          <br><br>
+
+          <div class="form__group" id="zoneInfo">
+            <label for="room_name">Zone Name</label>
+            {% for zone in zones.all %}
+            <input type="text" name="zone_name" id="zone_name" value="{{zone.zone_name}}" required>
+            {% endfor %}
+          </div>
+
+          <input class="btn btn--main" type="button" id="addZone" value="Add Zone">
+          <input class="btn btn--main" type="button" id="deleteZone" value="Delete Zone">
+          <br><br>
+
+          <div class="form__group" id="floorInfo">
+            <label for="room_name">Floor Name (Start with typical floor number)</label>
+            {% for floor in floors.all %}
+            <input type="text" name="floor_name" id="floor_name" value="{{floor.floor_name}}" required>
+            {% endfor %}
+          </div>
+
+          <input class="btn btn--main" type="button" id="addFloor" value="Add Floor">
+          <input class="btn btn--main" type="button" id="deleteFloor" value="Delete Floor">
+          <br><br>
+
+
+          <div class="form__action">
+            <a class="btn btn--dark" href="{% url 'home' %}">Cancel</a>
+            <button class="btn btn--main" type="submit">Submit</button>
+          </div>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</main>
+<script type="text/javascript">
+  document.getElementById("addBlock").onclick = function () {
+
+    var blockName = document.createElement("input");
+    blockName.type = "text";
+    blockName.name = "block_name";
+    blockName.required = true;
+
+    var blockDiv = document.getElementById("blockInfo");
+    // blockDiv.appendChild(document.createElement("br"));
+    // blockDiv.appendChild(document.createElement("br"));
+    blockDiv.appendChild(blockName);
+
+    document.getElementById("deleteBlock").onclick = function () {
+      var blockInputs = document.getElementById('blockInfo').querySelectorAll('input[type="text"]'),
+        totalBlockInputs = blockInputs.length;
+      if (totalBlockInputs > 1) {
+        blockInputs[totalBlockInputs - 1].parentNode.removeChild(blockInputs[totalBlockInputs - 1]);
+      }
+    }
+
+  }
+
+  document.getElementById("addZone").onclick = function () {
+
+    var zoneName = document.createElement("input");
+    zoneName.type = "text";
+    zoneName.name = "zone_name";
+    zoneName.required = true;
+
+    var zoneDiv = document.getElementById("zoneInfo");
+    // blockDiv.appendChild(document.createElement("br"));
+    // blockDiv.appendChild(document.createElement("br"));
+    zoneDiv.appendChild(zoneName);
+
+    document.getElementById("deleteZone").onclick = function () {
+      var zoneInputs = document.getElementById('zoneInfo').querySelectorAll('input[type="text"]'),
+        totalZoneInputs = zoneInputs.length;
+      if (totalZoneInputs > 1) {
+        zoneInputs[totalZoneInputs - 1].parentNode.removeChild(zoneInputs[totalZoneInputs - 1]);
+      }
+    }
+
+  }
+
+  document.getElementById("addFloor").onclick = function () {
+
+    var floorName = document.createElement("input");
+    floorName.type = "text";
+    floorName.name = "floor_name";
+    floorName.required = true;
+
+    var floorDiv = document.getElementById("floorInfo");
+    // blockDiv.appendChild(document.createElement("br"));
+    // blockDiv.appendChild(document.createElement("br"));
+    floorDiv.appendChild(floorName);
+
+    document.getElementById("deleteFloor").onclick = function () {
+      var floorInputs = document.getElementById('floorInfo').querySelectorAll('input[type="text"]'),
+        totalFloorInputs = floorInputs.length;
+      if (totalFloorInputs > 1) {
+        floorInputs[totalFloorInputs - 1].parentNode.removeChild(floorInputs[totalFloorInputs - 1]);
+      }
+    }
+
+  }
+</script>
+{% endblock content %}

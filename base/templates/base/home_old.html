@@ -1,0 +1,30 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+{% include 'sidebar.html' %}
+
+<div class="content">
+
+    <form method="GET" action="{% url 'home' %}">
+        <input type="text" name="q" placeholder="Search Projects..." />
+    </form>
+
+    <div>
+        <h5>{{project_count}} Total Projects</h5>
+        <a href="{% url 'create-projects' %}">Add Project</a>
+        <div>
+            {% for project in project_list %}
+            <div>
+                <a href="{% url 'update-projects' project.id %}">Edit</a>
+                <a href="{% url 'delete-projects' project.id %}">Delete</a>
+                <h5>{{project.id}} -- <a href="{% url 'projects' project.id %}">{{project.project_name}}</a></h5>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock content %}
