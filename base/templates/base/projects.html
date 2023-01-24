@@ -49,7 +49,7 @@
             {% if target.block.pk == block.pk %}
             {% if target.zone.pk == zone.pk %}
             {% if target.floor.pk == floor.pk %}
-            {% if not target.floor.pk == firstfloors.pk %}
+            {% if not target.floor.pk == lastfloors.pk %}
             {% plus_days newdate target.target_floor_cycle as newdate %}
             {% else %}
             {% plus_days project_list.start_date target.target_floor_cycle as newdate %}
@@ -76,7 +76,24 @@
             {% endif %}
             {% endfor %}
         </th>
-        <th align="center" style="background-color: orange; color: black;">1</th>
+        <th align="center">
+            {% with newdate=project_list.start_date %}
+            {% for actual in actualfloors.all%}
+            {% if actual.block.pk == block.pk %}
+            {% if actual.zone.pk == zone.pk %}
+            {% if actual.floor.pk == floor.pk %}
+            {% if not actual.floor.pk == lastfloors.pk %}
+            {% plus_days newdate actual.actual_floor_cycle as newdate %}
+            {% else %}
+            {% plus_days project_list.start_date actual.actual_floor_cycle as newdate %}
+            {% endif %}
+            {{newdate|date:"d/m/Y"}}
+            {% endif %}
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+            {% endwith %}
+        </th>
         <th align="center" style="background-color: red; color: black;">2</th>
         <th align="center" style="height: 0px; width: 150px;">
             {% for actual in actualfloors.all %}
