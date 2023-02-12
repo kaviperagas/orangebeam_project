@@ -44,24 +44,27 @@
         {% for zone in zones.all %}
 
         <th align="center">
-            {% with newdate=project_list.start_date %}
-            {% for target in targetfloors.all%}
+            {% for target in targetfloors.all %}
             {% if target.block.pk == block.pk %}
             {% if target.zone.pk == zone.pk %}
             {% if target.floor.pk == floor.pk %}
-            {% if not target.floor.pk == lastfloors.pk %}
-            {% plus_days newdate target.target_floor_cycle as newdate %}
-            {% else %}
-            {% plus_days project_list.start_date target.target_floor_cycle as newdate %}
-            {% endif %}
-            {{newdate|date:"d/m/Y"}}
+            {{target.target_due_date|date:"d/m/Y"}}
             {% endif %}
             {% endif %}
             {% endif %}
             {% endfor %}
-            {% endwith %}
         </th>
-        <th align="center">2</th>
+        <th align="center">
+            {% for target in targetfloors.all %}
+            {% if target.block.pk == block.pk %}
+            {% if target.zone.pk == zone.pk %}
+            {% if target.floor.pk == floor.pk %}
+            {{target.target_progress_percentage}}%
+            {% endif %}
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+        </th>
         <th align="center" style="height: 30px; width: 150px;">
             {% for target in targetfloors.all %}
             {% if target.block.pk == block.pk %}
@@ -77,24 +80,27 @@
             {% endfor %}
         </th>
         <th align="center">
-            {% with newdate=project_list.start_date %}
             {% for actual in actualfloors.all%}
             {% if actual.block.pk == block.pk %}
             {% if actual.zone.pk == zone.pk %}
             {% if actual.floor.pk == floor.pk %}
-            {% if not actual.floor.pk == lastfloors.pk %}
-            {% plus_days newdate actual.actual_floor_cycle as newdate %}
-            {% else %}
-            {% plus_days project_list.start_date actual.actual_floor_cycle as newdate %}
-            {% endif %}
-            {{newdate|date:"d/m/Y"}}
+            {{actual.actual_due_date|date:"d/m/Y"}}
             {% endif %}
             {% endif %}
             {% endif %}
             {% endfor %}
-            {% endwith %}
         </th>
-        <th align="center" style="background-color: red; color: black;">2</th>
+        <th align="center">
+            {% for actual in actualfloors.all%}
+            {% if actual.block.pk == block.pk %}
+            {% if actual.zone.pk == zone.pk %}
+            {% if actual.floor.pk == floor.pk %}
+            {{actual.actual_progress_percentage}}%
+            {% endif %}
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+        </th>
         <th align="center" style="height: 0px; width: 150px;">
             {% for actual in actualfloors.all %}
             {% if actual.block.pk == block.pk %}
@@ -109,9 +115,66 @@
             {% endif %}
             {% endfor %}
         </th>
-        <th align="center" style="color: red;">1</th>
-        <th align="center" style="color: green;">2</th>
-        <th align="center" style="color: darkorange;">3</th>
+        <th align="center">
+            {% for target in targetfloors.all %}
+            {% if target.block.pk == block.pk %}
+            {% if target.zone.pk == zone.pk %}
+            {% if target.floor.pk == floor.pk %}
+            {% for actual in actualfloors.all%}
+            {% if actual.block.pk == block.pk %}
+            {% if actual.zone.pk == zone.pk %}
+            {% if actual.floor.pk == floor.pk %}
+            {% date_variance target.target_due_date actual.actual_due_date as days %}
+            {{days}} Days
+            {% endif %}
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+        </th>
+        <th align="center">
+            {% for target in targetfloors.all %}
+            {% if target.block.pk == block.pk %}
+            {% if target.zone.pk == zone.pk %}
+            {% if target.floor.pk == floor.pk %}
+            {% for actual in actualfloors.all%}
+            {% if actual.block.pk == block.pk %}
+            {% if actual.zone.pk == zone.pk %}
+            {% if actual.floor.pk == floor.pk %}
+            {% percentage_variance actual.actual_progress_percentage target.target_progress_percentage as percentage %}
+            {{percentage}}%
+            {% endif %}
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+        </th>
+        <th align="center">
+            {% for target in targetfloors.all %}
+            {% if target.block.pk == block.pk %}
+            {% if target.zone.pk == zone.pk %}
+            {% if target.floor.pk == floor.pk %}
+            {% for actual in actualfloors.all%}
+            {% if actual.block.pk == block.pk %}
+            {% if actual.zone.pk == zone.pk %}
+            {% if actual.floor.pk == floor.pk %}
+            {% days_variance target.target_floor_cycle actual.actual_floor_cycle as days %}
+            {{days}} Days
+            {% endif %}
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+        </th>
         {% endfor %}
     </tr>
     {% endfor %}

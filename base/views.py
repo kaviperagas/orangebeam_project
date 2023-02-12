@@ -5,9 +5,17 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, SetPasswordForm
 from .models import Project, Block, Zone, Floor, TargetFloor, ActualFloor
-from .forms import ProjectForm, UserForm, TargetFloorForm, ActualFloorForm, UpdateTargetFloorForm, UpdateActualFloorForm
+from .forms import ProjectForm, UserForm, UpdateTargetFloorForm, UpdateActualFloorForm
+import datetime
+from rest_framework import viewsets
+from .serializers import ProjectSerializer
 
 # Create your views here.
+
+
+class ProjectViewSet(viewsets.ModelViewSet):
+    queryset = Project.objects.all().order_by('project_name')
+    serializer_class = ProjectSerializer
 
 
 def welcomePage(request):
@@ -158,10 +166,10 @@ def projects(request, pk):
     zones = project_list.projectzones.all()
     floors = project_list.projectfloors.all()
     targetfloors = project_list.targetfloors.all()
-    lastfloors = floors.last()
+    firstfloors = floors.first()
     actualfloors = project_list.actualfloors.all()
     context = {'project_list': project_list,
-               'blocks': blocks, 'zones': zones, 'floors': floors, 'targetfloors': targetfloors, 'lastfloors': lastfloors, 'actualfloors': actualfloors}
+               'blocks': blocks, 'zones': zones, 'floors': floors, 'targetfloors': targetfloors, 'firstfloors': firstfloors, 'actualfloors': actualfloors}
     return render(request, 'base/projects.html', context)
 
 
@@ -173,10 +181,16 @@ def createTargetFloor(request, project_data):
     floors = projects.projectfloors.all()
 
     for block in blocks:
+        latestfloors = projects.targetfloors.filter(block=block)
         for zone in zones:
+            latestfloors1 = latestfloors.filter(zone=zone)
             for floor in floors:
-                targetfloors = TargetFloor(
-                    project=projects, block=block, zone=zone, floor=floor, target_floor_cycle=6)
+                if latestfloors1.exists():
+                    targetfloors = TargetFloor(
+                        project=projects, block=block, zone=zone, floor=floor, target_due_date=latestfloors1.last().target_due_date+datetime.timedelta(days=6), target_floor_cycle=6)
+                else:
+                    targetfloors = TargetFloor(
+                        project=projects, block=block, zone=zone, floor=floor, target_due_date=projects.start_date + datetime.timedelta(days=6), target_floor_cycle=6)
                 targetfloors.save()
 
 
@@ -184,12 +198,29 @@ def createTargetFloor(request, project_data):
 def updateTargetFloor(request, pk):
     page = 'update_targetfloor'
     targetfloor = TargetFloor.objects.get(id=pk)
+    projects = Project.objects.get(id=targetfloor.project.pk)
+    blocks = projects.projectblocks.filter(id=targetfloor.block.pk)
+    zones = projects.projectzones.filter(id=targetfloor.zone.pk)
+    floors = projects.projectfloors.all()
     form = UpdateTargetFloorForm(instance=targetfloor)
 
     if request.method == 'POST':
         form = UpdateTargetFloorForm(request.POST, instance=targetfloor)
         if form.is_valid():
-            form.save()
+            for block in blocks:
+                targetfloor1 = projects.targetfloors.filter(block=block)
+                for zone in zones:
+                    targetfloor2 = targetfloor1.filter(zone=zone)
+                    for floor in floors:
+                        targetfloor3 = targetfloor2.filter(
+                            id__gte=targetfloor.pk, floor=floor)
+                        for targetfloors in targetfloor3:
+                            if targetfloors.pk == targetfloor.pk:
+                                floor_cycle_days = targetfloor.target_floor_cycle - targetfloors.target_floor_cycle
+                                targetfloors.target_floor_cycle = targetfloors.target_floor_cycle+floor_cycle_days
+                            targetfloors.target_due_date = targetfloors.target_due_date + \
+                                datetime.timedelta(days=floor_cycle_days)
+                            targetfloors.save()
             # messages.success(request, "Your password has been changed")
             return redirect('projects', pk=targetfloor.project.id)
         else:
@@ -207,12 +238,19 @@ def createActualFloor(request, project_data):
     blocks = projects.projectblocks.all()
     zones = projects.projectzones.all()
     floors = projects.projectfloors.all()
+    new_date = projects.start_date + datetime.timedelta(days=6)
 
     for block in blocks:
+        latestfloors = projects.actualfloors.filter(block=block)
         for zone in zones:
+            latestfloors1 = latestfloors.filter(zone=zone)
             for floor in floors:
-                actualfloors = ActualFloor(
-                    project=projects, block=block, zone=zone, floor=floor, actual_floor_cycle=6)
+                if latestfloors1.exists():
+                    actualfloors = ActualFloor(
+                        project=projects, block=block, zone=zone, floor=floor, actual_due_date=latestfloors1.last().actual_due_date+datetime.timedelta(days=6), actual_floor_cycle=6)
+                else:
+                    actualfloors = ActualFloor(
+                        project=projects, block=block, zone=zone, floor=floor, actual_due_date=new_date, actual_floor_cycle=6)
                 actualfloors.save()
 
 
@@ -220,12 +258,29 @@ def createActualFloor(request, project_data):
 def updateActualFloor(request, pk):
     page = 'update_actualfloor'
     actualfloor = ActualFloor.objects.get(id=pk)
+    projects = Project.objects.get(id=actualfloor.project.pk)
+    blocks = projects.projectblocks.filter(id=actualfloor.block.pk)
+    zones = projects.projectzones.filter(id=actualfloor.zone.pk)
+    floors = projects.projectfloors.all()
     form = UpdateActualFloorForm(instance=actualfloor)
 
     if request.method == 'POST':
         form = UpdateActualFloorForm(request.POST, instance=actualfloor)
         if form.is_valid():
-            form.save()
+            for block in blocks:
+                actualfloor1 = projects.actualfloors.filter(block=block)
+                for zone in zones:
+                    actualfloor2 = actualfloor1.filter(zone=zone)
+                    for floor in floors:
+                        actualfloor3 = actualfloor2.filter(
+                            id__gte=actualfloor.pk, floor=floor)
+                        for actualfloors in actualfloor3:
+                            if actualfloors.pk == actualfloor.pk:
+                                floor_cycle_days = actualfloor.actual_floor_cycle - actualfloors.actual_floor_cycle
+                                actualfloors.actual_floor_cycle = actualfloors.actual_floor_cycle+floor_cycle_days
+                            actualfloors.actual_due_date = actualfloors.actual_due_date + \
+                                datetime.timedelta(days=floor_cycle_days)
+                            actualfloors.save()
             # messages.success(request, "Your password has been changed")
             return redirect('projects', pk=actualfloor.project.id)
         else:

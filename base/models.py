@@ -1,19 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import Avg
 
 # Create your models here.
-
-# status = (
-#     ('1', 'Working'),
-#     ('2', 'Stuck'),
-#     ('3', 'Done'),
-# )
-
-# due = (
-#     ('1', 'On Due'),
-#     ('2', 'Overdue'),
-#     ('3', 'Done'),
-# )
 
 
 class Project(models.Model):
@@ -84,6 +73,8 @@ class TargetFloor(models.Model):
     block = models.ForeignKey(Block, on_delete=models.CASCADE)
     zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
     floor = models.ForeignKey(Floor, on_delete=models.CASCADE)
+    target_due_date = models.DateField()
+    target_progress_percentage = models.PositiveIntegerField(default=0)
     target_floor_cycle = models.PositiveIntegerField(default=1)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -101,6 +92,8 @@ class ActualFloor(models.Model):
     block = models.ForeignKey(Block, on_delete=models.CASCADE)
     zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
     floor = models.ForeignKey(Floor, on_delete=models.CASCADE)
+    actual_due_date = models.DateField()
+    actual_progress_percentage = models.PositiveIntegerField(default=0)
     actual_floor_cycle = models.PositiveIntegerField(default=1)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)

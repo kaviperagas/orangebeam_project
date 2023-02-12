@@ -19,14 +19,14 @@ class TargetFloorForm(ModelForm):
     class Meta:
         model = TargetFloor
         fields = '__all__'
-        exclude = ("target_start_date",)
+        exclude = ("target_due_date", "target_progress_percentage",)
 
 
 class UpdateTargetFloorForm(ModelForm):
     class Meta:
         model = TargetFloor
         fields = '__all__'
-        exclude = ("target_start_date",)
+        exclude = ("target_due_date", "target_progress_percentage",)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -40,14 +40,14 @@ class ActualFloorForm(ModelForm):
     class Meta:
         model = ActualFloor
         fields = '__all__'
-        exclude = ("actual_start_date",)
+        exclude = ("actual_due_date", "actual_progress_percentage",)
 
 
 class UpdateActualFloorForm(ModelForm):
     class Meta:
         model = ActualFloor
         fields = '__all__'
-        exclude = ('actual_start_date',)
+        exclude = ('actual_due_date', "actual_progress_percentage",)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
