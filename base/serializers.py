@@ -42,7 +42,7 @@ class ProjectSerializer(serializers.HyperlinkedModelSerializer):
         return average
 
 
-class VideoSerializer(serializers.ModelSerializer):
+class VideoSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Video
-        fields = ('id', 'title', 'collected', 'video', 'created')
+        fields = ('id', 'title', 'date_collected', 'video', 'created')

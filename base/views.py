@@ -9,29 +9,13 @@ from .forms import ProjectForm, UserForm, UpdateTargetFloorForm, UpdateActualFlo
 import datetime
 from rest_framework import viewsets
 from .serializers import ProjectSerializer, VideoSerializer
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
 
 # Create your views here.
 
 
-@api_view(['POST'])
-def upload_video(request):
-    if request.method == 'POST' and request.FILES:
-        project_id = request.POST.get('project_id')
-        title = request.POST.get('title')
-        collected = request.POST.get('collected')
-        video_file = request.FILES['video']
-        project = Project.objects.get(id=project_id)
-        video = Video.objects.create(
-            project=project,
-            title=title,
-            collected=collected,
-            video=video_file,
-        )
-        serializer = VideoSerializer(video)
-        return Response(serializer.data)
-    return Response(status=400)
+class VideoViewSet(viewsets.ModelViewSet):
+    queryset = Video.objects.all().order_by('title')
+    serializer_class = VideoSerializer
 
 
 class ProjectViewSet(viewsets.ModelViewSet):

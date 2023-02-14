@@ -108,6 +108,6 @@ class Video(models.Model):
     project = models.ForeignKey(
         Project, related_name='projectvideos', on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
-    collected = models.DateTimeField()
+    date_collected = models.DateTimeField()
     video = models.FileField(upload_to='videos/')
     created = models.DateTimeField(auto_now_add=True)

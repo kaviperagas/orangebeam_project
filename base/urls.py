@@ -7,9 +7,9 @@ from . import views
 
 router = routers.DefaultRouter()
 router.register(r'projects', views.ProjectViewSet)
+router.register(r'videos', views.VideoViewSet)
 
 urlpatterns = [
-    path('upload-video/', views.upload_video, name='upload_video'),
     path('rest-api/', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('', views.welcomePage, name="welcome"),
