@@ -10,8 +10,20 @@ import datetime
 from rest_framework import viewsets
 from .serializers import ProjectSerializer
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.core.files.storage import FileSystemStorage
 
 # Create your views here.
+
+
+def upload_video(request):
+    if request.method == 'POST' and request.FILES['video']:
+        video_file = request.FILES['video']
+        fs = FileSystemStorage()
+        filename = fs.save(video_file.name, video_file)
+        uploaded_video_url = fs.url(filename)
+        return render(request, 'upload_video.html', {'uploaded_video_url': uploaded_video_url})
+    return render(request, 'upload_video.html')
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
