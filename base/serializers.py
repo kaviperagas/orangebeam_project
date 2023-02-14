@@ -32,7 +32,7 @@ class ProjectSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Project
-        fields = ("url", "project_name", "manager_name", "start_date",
+        fields = ("url", "id", "project_name", "manager_name", "start_date",
                   "due_date", "average_percentage", "projectblocks", "projectzones", "projectfloors",)
 
     def get_average_percentage(self, obj):
@@ -40,6 +40,7 @@ class ProjectSerializer(serializers.HyperlinkedModelSerializer):
         average = related_model_as.aggregate(Avg('actual_progress_percentage'))[
             'actual_progress_percentage__avg']
         return average
+
 
 class VideoSerializer(serializers.ModelSerializer):
     class Meta:
