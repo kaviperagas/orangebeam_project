@@ -18,9 +18,17 @@ from rest_framework.response import Response
 @api_view(['POST'])
 def upload_video(request):
     if request.method == 'POST' and request.FILES:
+        project_id = request.POST.get('project_id')
+        title = request.POST.get('title')
+        collected = request.POST.get('collected')
         video_file = request.FILES['video']
-        video = Video(title=request.POST['title'], video=video_file)
-        video.save()
+        project = Project.objects.get(id=project_id)
+        video = Video.objects.create(
+            project=project,
+            title=title,
+            collected=collected,
+            video=video_file,
+        )
         serializer = VideoSerializer(video)
         return Response(serializer.data)
     return Response(status=400)
