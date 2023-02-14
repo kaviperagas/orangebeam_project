@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models import Avg
 
 # Create your models here.
 
@@ -103,3 +102,12 @@ class ActualFloor(models.Model):
 
     def __str__(self):
         return str(self.actual_floor_cycle)
+
+
+class Video(models.Model):
+    project = models.ForeignKey(
+        Project, related_name='projectvideos', on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
+    collected = models.DateTimeField()
+    video = models.FileField(upload_to='videos/')
+    created = models.DateTimeField(auto_now_add=True)
