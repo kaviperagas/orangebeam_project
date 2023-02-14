@@ -22,8 +22,9 @@ def upload_video(request):
         fs = FileSystemStorage()
         filename = fs.save(video_file.name, video_file)
         uploaded_video_url = fs.url(filename)
-        return render(request, 'upload_video.html', {'uploaded_video_url': uploaded_video_url})
-    return render(request, 'upload_video.html')
+        return JsonResponse({'success': True})
+    else:
+        return JsonResponse({'success': False})
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
