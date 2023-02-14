@@ -16,6 +16,7 @@ from django.core.files.storage import FileSystemStorage
 # Create your views here.
 
 
+@csrf_exempt
 def upload_video(request):
     if request.method == 'POST' and request.FILES['video']:
         video_file = request.FILES['video']
