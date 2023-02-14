@@ -9,6 +9,7 @@ from .forms import ProjectForm, UserForm, UpdateTargetFloorForm, UpdateActualFlo
 import datetime
 from rest_framework import viewsets
 from .serializers import ProjectSerializer
+from django.http import JsonResponse
 
 # Create your views here.
 
