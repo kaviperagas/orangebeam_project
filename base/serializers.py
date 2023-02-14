@@ -45,4 +45,4 @@ class ProjectSerializer(serializers.HyperlinkedModelSerializer):
 class VideoSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Video
-        fields = ('id', 'title', 'date_collected', 'video', 'created')
+        fields = ('url', 'id', 'title', 'date_collected', 'video', 'created')
