@@ -26,9 +26,9 @@ class FloorSerializer(serializers.ModelSerializer):
 
 class ProjectSerializer(serializers.HyperlinkedModelSerializer):
     average_percentage = serializers.SerializerMethodField()
-    projectfloors = FloorSerializer(many=True)
-    projectblocks = BlockSerializer(many=True)
-    projectzones = ZoneSerializer(many=True)
+    projectfloors = FloorSerializer(read_only=True, many=True)
+    projectblocks = BlockSerializer(read_only=True, many=True)
+    projectzones = ZoneSerializer(read_only=True, many=True)
 
     class Meta:
         model = Project
