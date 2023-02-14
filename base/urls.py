@@ -1,4 +1,6 @@
 from django.urls import include, path
+from django.conf import settings
+from django.conf.urls.static import static
 from rest_framework import routers
 from . import views
 
@@ -35,4 +37,4 @@ urlpatterns = [
     path('update-projects/<str:pk>/', views.updateProject, name="update-projects"),
     path('delete-projects/<str:pk>/', views.deleteProject, name="delete-projects"),
     path('menu/', views.menuPage, name="menu"),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

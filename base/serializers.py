@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.db.models import Avg
-from .models import Project, ActualFloor, Floor, Block, Zone
+from .models import Project, ActualFloor, Floor, Block, Zone, Video
 
 
 class BlockSerializer(serializers.ModelSerializer):
@@ -40,3 +40,8 @@ class ProjectSerializer(serializers.HyperlinkedModelSerializer):
         average = related_model_as.aggregate(Avg('actual_progress_percentage'))[
             'actual_progress_percentage__avg']
         return average
+
+class VideoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Video
+        fields = ('id', 'title', 'collected', 'video', 'created')

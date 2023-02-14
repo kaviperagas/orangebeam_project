@@ -4,28 +4,26 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, SetPasswordForm
-from .models import Project, Block, Zone, Floor, TargetFloor, ActualFloor
+from .models import Project, Block, Zone, Floor, TargetFloor, ActualFloor, Video
 from .forms import ProjectForm, UserForm, UpdateTargetFloorForm, UpdateActualFloorForm
 import datetime
 from rest_framework import viewsets
-from .serializers import ProjectSerializer
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.core.files.storage import FileSystemStorage
+from .serializers import ProjectSerializer, VideoSerializer
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 # Create your views here.
 
 
-@csrf_exempt
+@api_view(['POST'])
 def upload_video(request):
-    if request.method == 'POST' and request.FILES['video']:
+    if request.method == 'POST' and request.FILES:
         video_file = request.FILES['video']
-        fs = FileSystemStorage()
-        filename = fs.save(video_file.name, video_file)
-        uploaded_video_url = fs.url(filename)
-        return JsonResponse({'success': True})
-    else:
-        return JsonResponse({'success': False})
+        video = Video(title=request.POST['title'], video=video_file)
+        video.save()
+        serializer = VideoSerializer(video)
+        return Response(serializer.data)
+    return Response(status=400)
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
